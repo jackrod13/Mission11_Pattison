@@ -12,16 +12,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BookDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("BookConnection")));
 
-// Configure CORS to allow requests from React frontend
+// ? Fix: Update CORS to match your frontend port (5174)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173") // Allow React frontend
+            policy.WithOrigins("http://localhost:5173") // ? Change to match your frontend
                   .AllowAnyMethod()
                   .AllowAnyHeader()
-                  .AllowCredentials(); // Allow cookies/auth if needed
+                  .AllowCredentials(); // ? Allow cookies/auth if needed
         });
 });
 
@@ -36,7 +36,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Enable CORS before authentication and authorization
+// ? Fix: Apply CORS before authentication
 app.UseCors("AllowFrontend");
 
 app.UseAuthorization();

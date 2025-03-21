@@ -13,11 +13,22 @@ namespace WebApplication1.Controllers
         public BookController(BookDbContext temp) => _bookContext = temp;
 
         [HttpGet("Books")]
-        public IEnumerable<Book> GetBooks()
+        public IActionResult GetBooks(int pageSize = 5, int pageNum = 1)
         {
-            var something = _bookContext.Books.ToList();
+            var something = _bookContext.Books
+                .Skip((pageNum - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
-            return something;
+            var totalNumBooks = _bookContext.Books.Count();
+
+            var someObject = new
+            {
+                Books = something,
+                TotalNumBooks = totalNumBooks
+            };
+
+            return Ok(someObject);
         }
 
     }

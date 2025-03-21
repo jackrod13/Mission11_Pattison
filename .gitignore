@@ -1,0 +1,18 @@
+# Ignore Node.js dependencies (Frontend)
+node_modules/
+dist/
+.vscode/
+.DS_Store
+
+# Ignore Visual Studio and .NET build files (Backend)
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.vsidx
+
+# Ignore log and system files
+logs/
+*.log
+*.swp

@@ -26,17 +26,33 @@ function BookList() {
       <h1>Book List</h1>
       <br />
       {books.map((book) => (
-        <div key={book.bookID} id="bookCard">
-          <h3>{book.title}</h3>
-          <ul>
-            <li>Author: {book.author}</li>
-            <li>Publisher: {book.publisher}</li>
-            <li>ISBN: {book.isbn}</li>
-            <li>Classification: {book.classification}</li>
-            <li>Category: {book.category}</li>
-            <li>Page Count: {book.pageCount}</li>
-            <li>Price: ${book.price.toFixed(2)}</li>
-          </ul>
+        <div id="bookCard" className="card" key={book.bookID}>
+          <h3 className="card-title">{book.title}</h3>
+          <div className="card-body">
+            <ul className="list-unstyled">
+              <li>
+                <strong>Author:</strong> {book.author}
+              </li>
+              <li>
+                <strong>Publisher:</strong> {book.publisher}
+              </li>
+              <li>
+                <strong>ISBN:</strong> {book.isbn}
+              </li>
+              <li>
+                <strong>Classification:</strong> {book.classification}
+              </li>
+              <li>
+                <strong>Category:</strong> {book.category}
+              </li>
+              <li>
+                <strong>Page Count:</strong> {book.pageCount}
+              </li>
+              <li>
+                <strong>Price:</strong> ${book.price.toFixed(2)}
+              </li>
+            </ul>
+          </div>
         </div>
       ))}
     </>

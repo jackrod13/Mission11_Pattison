@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Ignore Visual Studio and build-related files
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.vsidx

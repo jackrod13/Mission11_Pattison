@@ -135,3 +135,4 @@ C:\Users\jackp\OneDrive\Desktop\BookStore\backend\WebApplication1\WebApplication
 C:\Users\jackp\OneDrive\Desktop\BookStore\backend\WebApplication1\WebApplication1\obj\Debug\net8.0\BookStore.pdb
 C:\Users\jackp\OneDrive\Desktop\BookStore\backend\WebApplication1\WebApplication1\obj\Debug\net8.0\BookStore.genruntimeconfig.cache
 C:\Users\jackp\OneDrive\Desktop\BookStore\backend\WebApplication1\WebApplication1\obj\Debug\net8.0\ref\BookStore.dll
+C:\Users\jackp\OneDrive\Desktop\BookStore\backend\WebApplication1\WebApplication1\obj\Debug\net8.0\BookStore.sourcelink.json

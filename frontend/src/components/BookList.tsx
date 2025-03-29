@@ -1,19 +1,31 @@
+// Import hooks and libraries
 import { useEffect, useState } from 'react';
-import { Book } from './types/Book';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap
+import { Book } from '../types/Book';
+import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap styles
 
-function BookList() {
+// Component receives selectedCategories from parent
+function BookList({ selectedCategories }: { selectedCategories: string[] }) {
+  // Component state for book data, pagination, and sorting
   const [books, setBooks] = useState<Book[]>([]);
   const [pageSize, setPageSize] = useState<number>(5);
   const [pageNum, setPageNum] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [sortAscending, setSortAscending] = useState<boolean>(true);
+  const navigate = useNavigate();
 
+  // Fetch books from API when page size, number, or filters change
   useEffect(() => {
     const fetchBooks = async () => {
+      const categoryParams = selectedCategories
+        .map((cat) => `bookTypes=${encodeURIComponent(cat)}`)
+        .join('&');
+
       const response = await fetch(
-        `https://localhost:7146/api/Book/Books?pageSize=${pageSize}&pageNum=${pageNum}`
+        `https://localhost:7146/api/Book/Books?pageSize=${pageSize}&pageNum=${pageNum}${
+          selectedCategories.length ? `&${categoryParams}` : ''
+        }`
       );
       const data = await response.json();
 
@@ -23,13 +35,13 @@ function BookList() {
     };
 
     fetchBooks();
-  }, [pageSize, pageNum]);
+  }, [pageSize, pageNum, totalItems, selectedCategories]);
 
-  // Sorting function
+  // Sort books alphabetically based on title
   const sortedBooks = [...books].sort((a, b) => {
     return sortAscending
-      ? a.title.localeCompare(b.title) // Ascending order
-      : b.title.localeCompare(a.title); // Descending order
+      ? a.title.localeCompare(b.title)
+      : b.title.localeCompare(a.title);
   });
 
   return (
@@ -46,7 +58,7 @@ function BookList() {
         </button>
       </div>
 
-      {/* Book Cards - Vertical List */}
+      {/* Render Book Cards */}
       <div className="d-flex flex-column align-items-center">
         {sortedBooks.map((book) => (
           <div className="card w-75 mb-3 shadow-sm" key={book.bookID}>
@@ -75,12 +87,22 @@ function BookList() {
                   <strong>Price:</strong> ${book.price.toFixed(2)}
                 </li>
               </ul>
+
+              {/* Purchase button navigates to PurchasePage */}
+              <button
+                className="btn btn-success"
+                onClick={() =>
+                  navigate(`/purchase/${book.title}/${book.bookID}`)
+                }
+              >
+                Purchase
+              </button>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination Buttons */}
       <div className="d-flex justify-content-center mt-4">
         <button
           className="btn btn-outline-primary me-2"
@@ -90,10 +112,13 @@ function BookList() {
           Previous
         </button>
 
+        {/* Page number buttons */}
         {[...Array(totalPages)].map((_, i) => (
           <button
             key={i + 1}
-            className={`btn ${pageNum === i + 1 ? 'btn-primary' : 'btn-outline-primary'} mx-1`}
+            className={`btn ${
+              pageNum === i + 1 ? 'btn-primary' : 'btn-outline-primary'
+            } mx-1`}
             onClick={() => setPageNum(i + 1)}
             disabled={pageNum === i + 1}
           >
@@ -118,7 +143,7 @@ function BookList() {
           value={pageSize}
           onChange={(p) => {
             setPageSize(Number(p.target.value));
-            setPageNum(1);
+            setPageNum(1); // Reset to first page on size change
           }}
         >
           <option value="5">5</option>

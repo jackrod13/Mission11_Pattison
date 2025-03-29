@@ -23,6 +23,5 @@ namespace WebApplication1.Data
         [Required]
         public double Price { get; set; }
 
-  
     }
 }

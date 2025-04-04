@@ -1,8 +1,6 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
+  margin: 0;
   padding: 2rem;
-  text-align: center;
 }
 
 .logo {
@@ -39,4 +37,64 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.book-list-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 75vh;
+  padding-bottom: 2rem;
+}
+
+.book-list-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 75vh;
+  padding-bottom: 2rem;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  flex-grow: 1;
+}
+
+.book-card {
+  display: flex;
+}
+
+.book-list-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 75vh;
+  padding-bottom: 2rem;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.book-card {
+  display: flex;
+}
+
+.main-layout {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: flex-start;
+}
+
+.booklist-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }

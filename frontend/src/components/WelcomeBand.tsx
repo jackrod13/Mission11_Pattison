@@ -1,7 +1,7 @@
 function WelcomeBand() {
   return (
-    <div className="row bg-primary text-white">
-      <h1>Book Store</h1>
+    <div className="bg-primary text-white p-3 rounded mb-3 w-100">
+      <h2 className="text-center mb-0">Book Store</h2>
     </div>
   );
 }

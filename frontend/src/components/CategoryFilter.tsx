@@ -14,7 +14,7 @@ function CategoryFilter({
     const fetchCategories = async () => {
       try {
         const response = await fetch(
-          'https://localhost:7146/api/Book/GetBookTypes'
+          'https://localhost:7146/api/Book/GetBookCategories'
         );
         const data = await response.json();
         setCategories(data);

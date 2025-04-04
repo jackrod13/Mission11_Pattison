@@ -12,18 +12,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BookDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("BookConnection")));
 
-// ? Fix: Update CORS to match your frontend port (5174)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173") // ? Change to match your frontend
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .AllowCredentials(); // ? Allow cookies/auth if needed
+            policy
+                .AllowAnyOrigin()    // ✅ Allow all frontend origins (not restricted to localhost or Azure)
+                .AllowAnyMethod()
+                .AllowAnyHeader();
         });
 });
+
 
 var app = builder.Build();
 

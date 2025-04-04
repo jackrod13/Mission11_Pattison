@@ -6,7 +6,7 @@ interface FetchBooksResponse {
 }
 
 const API_URL =
-  'hhttps://bookstore-pattison-backend-arfcajhwh6cbf6ek.eastus-01.azurewebsites.net/api/Book';
+  'https://bookstore-pattison-backend-arfcajhwh6cbf6ek.eastus-01.azurewebsites.net/api/Book';
 
 export const fetchBooks = async (
   pageSize: number,

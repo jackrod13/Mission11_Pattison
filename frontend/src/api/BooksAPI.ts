@@ -35,7 +35,7 @@ export const fetchBooks = async (
   }
 };
 
-export const addBook = async (bookId: number, newBook: Book): Promise<Book> => {
+export const addBook = async (newBook: Book): Promise<Book> => {
   try {
     const response = await fetch(`${API_URL}/AddBook`, {
       method: 'POST',

@@ -8,9 +8,8 @@ interface NewBookFormProps {
 }
 
 const NewBookForm = ({ onSuccess, onCancel }: NewBookFormProps) => {
-  // Initialize form state with default/empty book values
-  const [formData, setFormData] = useState<Book>({
-    bookID: 0,
+  // Initialize form state with default/empty book values (bookID not needed)
+  const [formData, setFormData] = useState<Omit<Book, 'bookID'>>({
     title: '',
     author: '',
     publisher: '',
@@ -31,7 +30,7 @@ const NewBookForm = ({ onSuccess, onCancel }: NewBookFormProps) => {
   // Submit new book to API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await addBook(formData.bookID, formData);
+    await addBook(formData); // ✅ No bookID needed
     onSuccess(); // Notify parent that book was added
   };
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Book } from '../types/Book';
 import { useNavigate } from 'react-router-dom';
 import Pagination from './Pagination';
+import { fetchBooks } from '../api/BooksAPI'; // ✅ use the API wrapper
 
 // Displays a list of books based on selected categories
 function BookList({ selectedCategories }: { selectedCategories: string[] }) {
@@ -16,27 +17,10 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
 
   // Fetch books whenever filters or pagination changes
   useEffect(() => {
-    const fetchBooks = async () => {
+    const loadBooks = async () => {
       try {
         setLoading(true);
-
-        // Build query string for category filters
-        const categoryParams = selectedCategories
-          .map((cat) => `bookCategories=${encodeURIComponent(cat)}`)
-          .join('&');
-
-        // Call API with current filters and pagination
-        const response = await fetch(
-          `https://localhost:7146/api/Book/AllBooks?pageSize=${pageSize}&pageNum=${pageNum}${
-            selectedCategories.length ? `&${categoryParams}` : ''
-          }`
-        );
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch books');
-        }
-
-        const data = await response.json();
+        const data = await fetchBooks(pageSize, pageNum, selectedCategories); // ✅ use API wrapper
         setBooks(data.books);
         setTotalPages(Math.max(1, Math.ceil(data.totalNumBooks / pageSize)));
       } catch (err) {
@@ -46,7 +30,7 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
       }
     };
 
-    fetchBooks();
+    loadBooks();
   }, [selectedCategories, pageNum, pageSize]);
 
   // Sort books by title
@@ -77,13 +61,27 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
           <h3 className="card-title px-3 pt-3">{book.title}</h3>
           <div className="card-body">
             <ul className="list-unstyled">
-              <li><strong>Author:</strong> {book.author}</li>
-              <li><strong>Publisher:</strong> {book.publisher}</li>
-              <li><strong>ISBN:</strong> {book.isbn}</li>
-              <li><strong>Classification:</strong> {book.classification}</li>
-              <li><strong>Category:</strong> {book.category}</li>
-              <li><strong>Page Count:</strong> {book.pageCount}</li>
-              <li><strong>Price:</strong> ${book.price.toFixed(2)}</li>
+              <li>
+                <strong>Author:</strong> {book.author}
+              </li>
+              <li>
+                <strong>Publisher:</strong> {book.publisher}
+              </li>
+              <li>
+                <strong>ISBN:</strong> {book.isbn}
+              </li>
+              <li>
+                <strong>Classification:</strong> {book.classification}
+              </li>
+              <li>
+                <strong>Category:</strong> {book.category}
+              </li>
+              <li>
+                <strong>Page Count:</strong> {book.pageCount}
+              </li>
+              <li>
+                <strong>Price:</strong> ${book.price.toFixed(2)}
+              </li>
             </ul>
 
             {/* Navigate to purchase page */}

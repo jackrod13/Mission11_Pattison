@@ -5,65 +5,88 @@ interface FetchBooksResponse {
   totalNumBooks: number;
 }
 
-const BASE_URL =
-  'https://bookstoreproject-backend-ebgyhka0b6bxebds.eastus-01.azurewebsites.net/api';
+const API_URL =
+  'https://bookstoreproject-backend-ebgyhka0b6bxebds.eastus-01.azurewebsites.net/api/Book/AllBooks';
 
 export const fetchBooks = async (
   pageSize: number,
   pageNum: number,
-  categories: string[]
-) => {
-  const categoryParams = categories
-    .map((cat) => `bookCategories=${encodeURIComponent(cat)}`)
-    .join('&');
-  const url = `${BASE_URL}/Book/AllBooks?pageSize=${pageSize}&pageNum=${pageNum}${categories.length ? `&${categoryParams}` : ''}`;
+  selectedCategories: string[]
+): Promise<FetchBooksResponse> => {
+  try {
+    const categoryParams = selectedCategories
+      .map((cat) => `bookCategories=${encodeURIComponent(cat)}`)
+      .join('&');
 
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Failed to fetch books');
-  return await response.json();
+    const response = await fetch(
+      `${API_URL}/AllBooks?pageSize=${pageSize}&pageNum=${pageNum}${
+        selectedCategories.length ? `&${categoryParams}` : ''
+      }`
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch books');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching books:', error);
+    throw error;
+  }
 };
 
-export const addBook = async (book: Omit<Book, 'bookID'>) => {
-  const response = await fetch(`${BASE_URL}/Book/AddBook`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(book),
-  });
+export const addBook = async (newBook: Book): Promise<Book> => {
+  try {
+    const response = await fetch(`${API_URL}/AddBook`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newBook),
+    });
 
-  if (!response.ok) throw new Error('Failed to add book');
-  return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to add book');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error adding book', error);
+    throw error;
+  }
 };
 
 export const updateBook = async (
-  bookID: number,
-  book: Omit<Book, 'bookID'>
-) => {
-  const response = await fetch(`${BASE_URL}/Book/UpdateBook/${bookID}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(book),
-  });
+  bookId: number,
+  updatedBook: Book
+): Promise<Book> => {
+  try {
+    const response = await fetch(`${API_URL}/UpdateBook/${bookId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedBook),
+    });
 
-  if (!response.ok) throw new Error('Failed to update book');
-  return await response.json();
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating book:', error);
+    throw error;
+  }
 };
 
-export const deleteBook = async (bookID: number) => {
-  const response = await fetch(`${BASE_URL}/Book/DeleteBook/${bookID}`, {
-    method: 'DELETE',
-  });
+export const deleteBook = async (bookId: number): Promise<void> => {
+  try {
+    const response = await fetch(`${API_URL}/DeleteBook/${bookId}`, {
+      method: 'DELETE',
+    });
 
-  if (!response.ok) throw new Error('Failed to delete book');
-};
-
-export const fetchCategories = async () => {
-  const response = await fetch(`${BASE_URL}/Book/GetBookCategories`);
-  if (!response.ok) throw new Error('Failed to fetch categories');
-  return await response.json();
-};
-
-export const fetchBookById = async (bookID: number) => {
-  const response = await fetch(`${BASE_URL}/Book/${bookID}`);
-  if (!response.ok) throw new Error('Failed to fetch book by ID');
-  return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to delete book');
+    }
+  } catch (error) {
+    console.error('Error deleting book:', error);
+    throw error;
+  }
 };

@@ -21,8 +21,9 @@ function PurchasePage() {
     const fetchBook = async () => {
       try {
         const response = await fetch(
-          `https://localhost:7146/api/Book/${bookID}`
+          `https://bookstore-pattison-backend-arfcajhwh6cbf6ek.eastus-01.azurewebsites.net/api/Book/${bookID}`
         );
+
         if (!response.ok) throw new Error(`Status ${response.status}`);
         const book = await response.json();
         setTitle(book.title);

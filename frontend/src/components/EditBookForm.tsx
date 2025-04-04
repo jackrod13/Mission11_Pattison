@@ -3,30 +3,34 @@ import { Book } from '../types/Book';
 import { updateBook } from '../api/BooksAPI';
 
 interface EditBookFormProps {
-  book: Book;
-  onSuccess: () => void;
-  onCancel: () => void;
+  book: Book;               // The book to edit
+  onSuccess: () => void;    // Callback when update succeeds
+  onCancel: () => void;     // Callback when form is cancelled
 }
 
 const EditBookForm = ({ book, onSuccess, onCancel }: EditBookFormProps) => {
+  // Initialize form state with the passed-in book
   const [formData, setFormData] = useState<Book>({ ...book });
 
+  // Handle changes to any input field
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Submit updated book data to the API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await updateBook(formData.bookID, formData);
-    onSuccess();
+    onSuccess(); // Notify parent that update is complete
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Update a Book</h2>
       <div className="form-grid">
+        {/* Book input fields */}
         <label>
           Title:
           <input
@@ -100,6 +104,8 @@ const EditBookForm = ({ book, onSuccess, onCancel }: EditBookFormProps) => {
             onChange={handleChange}
           />
         </label>
+
+        {/* Form buttons */}
         <button type="submit">Update Book</button>
         <button type="button" onClick={onCancel}>
           Cancel

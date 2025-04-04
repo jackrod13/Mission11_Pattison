@@ -3,6 +3,7 @@ import { Book } from '../types/Book';
 import { useNavigate } from 'react-router-dom';
 import Pagination from './Pagination';
 
+// Displays a list of books based on selected categories
 function BookList({ selectedCategories }: { selectedCategories: string[] }) {
   const [books, setBooks] = useState<Book[]>([]);
   const [sortAscending, setSortAscending] = useState<boolean>(true);
@@ -13,14 +14,18 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Fetch books whenever filters or pagination changes
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         setLoading(true);
+
+        // Build query string for category filters
         const categoryParams = selectedCategories
           .map((cat) => `bookCategories=${encodeURIComponent(cat)}`)
           .join('&');
 
+        // Call API with current filters and pagination
         const response = await fetch(
           `https://localhost:7146/api/Book/AllBooks?pageSize=${pageSize}&pageNum=${pageNum}${
             selectedCategories.length ? `&${categoryParams}` : ''
@@ -44,6 +49,7 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
     fetchBooks();
   }, [selectedCategories, pageNum, pageSize]);
 
+  // Sort books by title
   const sortedBooks = [...books].sort((a, b) =>
     sortAscending
       ? a.title.localeCompare(b.title)
@@ -55,6 +61,7 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
 
   return (
     <>
+      {/* Toggle sort button */}
       <div className="mb-3 text-center">
         <button
           className="btn btn-primary"
@@ -64,33 +71,22 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
         </button>
       </div>
 
+      {/* Render each book as a card */}
       {sortedBooks.map((book) => (
         <div id="projectCard" className="card mb-4" key={book.bookID}>
           <h3 className="card-title px-3 pt-3">{book.title}</h3>
           <div className="card-body">
             <ul className="list-unstyled">
-              <li>
-                <strong>Author:</strong> {book.author}
-              </li>
-              <li>
-                <strong>Publisher:</strong> {book.publisher}
-              </li>
-              <li>
-                <strong>ISBN:</strong> {book.isbn}
-              </li>
-              <li>
-                <strong>Classification:</strong> {book.classification}
-              </li>
-              <li>
-                <strong>Category:</strong> {book.category}
-              </li>
-              <li>
-                <strong>Page Count:</strong> {book.pageCount}
-              </li>
-              <li>
-                <strong>Price:</strong> ${book.price.toFixed(2)}
-              </li>
+              <li><strong>Author:</strong> {book.author}</li>
+              <li><strong>Publisher:</strong> {book.publisher}</li>
+              <li><strong>ISBN:</strong> {book.isbn}</li>
+              <li><strong>Classification:</strong> {book.classification}</li>
+              <li><strong>Category:</strong> {book.category}</li>
+              <li><strong>Page Count:</strong> {book.pageCount}</li>
+              <li><strong>Price:</strong> ${book.price.toFixed(2)}</li>
             </ul>
+
+            {/* Navigate to purchase page */}
             <button
               className="btn btn-success mt-3"
               onClick={() => navigate(`/purchase/${book.title}/${book.bookID}`)}
@@ -101,6 +97,7 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
         </div>
       ))}
 
+      {/* Pagination component */}
       <Pagination
         currentPage={pageNum}
         totalPages={totalPages}

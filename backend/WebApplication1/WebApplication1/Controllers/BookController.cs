@@ -12,9 +12,11 @@ namespace BookStore.API.Controllers
     {
         private BookDbContext _bookContext;
 
+        // Inject BookDbContext through constructor
         public BookController(BookDbContext temp) => _bookContext = temp;
 
-        // Get all books with optional pagination and category filtering
+        // GET: api/Book/AllBooks
+        // Returns paginated list of books with optional category filtering
         [HttpGet("AllBooks")]
         public IActionResult GetBooks(int pageSize = 5, int pageNum = 1, [FromQuery] List<string>? bookCategories = null)
         {
@@ -22,6 +24,7 @@ namespace BookStore.API.Controllers
             {
                 var query = _bookContext.Books.AsQueryable();
 
+                // Apply category filter if provided
                 if (bookCategories != null && bookCategories.Any())
                 {
                     query = query.Where(b => bookCategories.Contains(b.Category));
@@ -29,6 +32,7 @@ namespace BookStore.API.Controllers
 
                 var totalNumBooks = query.Count();
 
+                // Apply pagination
                 var books = query
                     .Skip((pageNum - 1) * pageSize)
                     .Take(pageSize)
@@ -48,7 +52,8 @@ namespace BookStore.API.Controllers
             }
         }
 
-        // Get all distinct book categories
+        // GET: api/Book/GetBookCategories
+        // Returns all distinct book categories from the database
         [HttpGet("GetBookCategories")]
         public IActionResult GetBookCategories()
         {
@@ -67,7 +72,8 @@ namespace BookStore.API.Controllers
             }
         }
 
-        // ✅ Get single book by ID (used by Purchase page)
+        // GET: api/Book/{bookId}
+        // Returns a single book by its ID (used on Purchase page)
         [HttpGet("{bookId}")]
         public IActionResult GetBookById(int bookId)
         {
@@ -81,7 +87,8 @@ namespace BookStore.API.Controllers
             return Ok(book);
         }
 
-        // Add a new book
+        // POST: api/Book/AddBook
+        // Adds a new book to the database
         [HttpPost("AddBook")]
         public IActionResult AddBook([FromBody] Book newBook)
         {
@@ -90,7 +97,8 @@ namespace BookStore.API.Controllers
             return Ok(newBook);
         }
 
-        // Update an existing book
+        // PUT: api/Book/UpdateBook/{bookId}
+        // Updates an existing book in the database
         [HttpPut("UpdateBook/{bookId}")]
         public IActionResult UpdateBook(int bookId, [FromBody] Book updatedBook)
         {
@@ -101,6 +109,7 @@ namespace BookStore.API.Controllers
                 return NotFound(new { message = "Book not found" });
             }
 
+            // Update individual fields
             existingBook.Title = updatedBook.Title;
             existingBook.Author = updatedBook.Author;
             existingBook.Category = updatedBook.Category;
@@ -116,7 +125,8 @@ namespace BookStore.API.Controllers
             return Ok(existingBook);
         }
 
-        // Delete a book
+        // DELETE: api/Book/DeleteBook/{bookId}
+        // Deletes a book by ID
         [HttpDelete("DeleteBook/{bookId}")]
         public IActionResult DeleteBook(int bookId)
         {
@@ -130,7 +140,7 @@ namespace BookStore.API.Controllers
             _bookContext.Books.Remove(book);
             _bookContext.SaveChanges();
 
-            return NoContent();
+            return NoContent(); // 204 No Content
         }
     }
 }

@@ -3,11 +3,12 @@ import { Book } from '../types/Book';
 import { addBook } from '../api/BooksAPI';
 
 interface NewBookFormProps {
-  onSuccess: () => void;
-  onCancel: () => void;
+  onSuccess: () => void; // Callback when book is successfully added
+  onCancel: () => void; // Callback to close the form without saving
 }
 
 const NewBookForm = ({ onSuccess, onCancel }: NewBookFormProps) => {
+  // Initialize form state with default/empty book values
   const [formData, setFormData] = useState<Book>({
     bookID: 0,
     title: '',
@@ -20,22 +21,25 @@ const NewBookForm = ({ onSuccess, onCancel }: NewBookFormProps) => {
     price: 0,
   });
 
+  // Update form state when input fields change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Submit new book to API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await addBook(formData.bookID, formData);
-    onSuccess();
+    onSuccess(); // Notify parent that book was added
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Add New Book</h2>
       <div className="form-grid">
+        {/* Form inputs for book fields */}
         <label>
           Title:
           <input
@@ -109,6 +113,8 @@ const NewBookForm = ({ onSuccess, onCancel }: NewBookFormProps) => {
             onChange={handleChange}
           />
         </label>
+
+        {/* Form action buttons */}
         <button type="submit">Add Book</button>
         <button type="button" onClick={onCancel}>
           Cancel

@@ -5,7 +5,6 @@ import Pagination from '../components/Pagination';
 import NewBookForm from '../components/NewBookForm';
 import EditBookForm from '../components/EditBookForm';
 
-// Admin page to view, add, edit, and delete books
 const AdminBooksPage = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -13,10 +12,10 @@ const AdminBooksPage = () => {
   const [pageSize, setPageSize] = useState<number>(10);
   const [pageNum, setPageNum] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [showForm, setShowForm] = useState(false); // toggle for NewBookForm
-  const [editingBook, setEditingBook] = useState<Book | null>(null); // book currently being edited
+  const [showForm, setShowForm] = useState(false);
+  const [editingBook, setEditingBook] = useState<Book | null>(null);
 
-  // Load books when page or size changes
+  // Fetch books from API on page load or when page changes
   useEffect(() => {
     const loadBooks = async () => {
       try {
@@ -33,7 +32,7 @@ const AdminBooksPage = () => {
     loadBooks();
   }, [pageSize, pageNum]);
 
-  // Delete a book after confirmation
+  // Delete book by ID
   const handleDelete = async (bookId: number) => {
     const confirmDelete = window.confirm(
       'Are you sure you want to delete this book?'
@@ -42,7 +41,6 @@ const AdminBooksPage = () => {
 
     try {
       await deleteBook(bookId);
-      // Remove book from local state after successful delete
       setBooks(books.filter((b) => b.bookID !== bookId));
     } catch (error) {
       alert('Failed to delete book. Please try again.');
@@ -56,7 +54,7 @@ const AdminBooksPage = () => {
     <div>
       <h1>Admin - Books</h1>
 
-      {/* Show 'Add Book' button */}
+      {/* Button to open "Add New Book" form */}
       <button
         className="btn btn-success mb-3"
         onClick={() => setShowForm(true)}
@@ -64,12 +62,11 @@ const AdminBooksPage = () => {
         Add Book
       </button>
 
-      {/* Display form for adding a new book */}
+      {/* Conditional rendering of Add and Edit forms */}
       {showForm && (
         <NewBookForm
           onSuccess={() => {
             setShowForm(false);
-            // Refresh book list after adding
             fetchBooks(pageSize, pageNum, []).then((data) =>
               setBooks(data.books)
             );
@@ -78,13 +75,11 @@ const AdminBooksPage = () => {
         />
       )}
 
-      {/* Display form for editing an existing book */}
       {editingBook && (
         <EditBookForm
           book={editingBook}
           onSuccess={() => {
             setEditingBook(null);
-            // Refresh book list after update
             fetchBooks(pageSize, pageNum, []).then((data) =>
               setBooks(data.books)
             );
@@ -93,7 +88,7 @@ const AdminBooksPage = () => {
         />
       )}
 
-      {/* Book table */}
+      {/* Book Table */}
       <table className="table table-bordered table-striped">
         <thead className="table-dark">
           <tr>
@@ -122,16 +117,16 @@ const AdminBooksPage = () => {
               <td>{b.pageCount}</td>
               <td>${b.price.toFixed(2)}</td>
               <td>
-                {/* Edit and Delete buttons for each book */}
                 <button
                   className="btn btn-primary btn-sm w-100 mb-1"
                   onClick={() => setEditingBook(b)}
                 >
                   Edit
                 </button>
+                {/* ✅ Assert bookID is defined */}
                 <button
                   className="btn btn-danger btn-sm w-100"
-                  onClick={() => handleDelete(b.bookID)}
+                  onClick={() => handleDelete(b.bookID!)}
                 >
                   Delete
                 </button>
@@ -141,7 +136,7 @@ const AdminBooksPage = () => {
         </tbody>
       </table>
 
-      {/* Pagination controls */}
+      {/* Pagination component */}
       <Pagination
         currentPage={pageNum}
         totalPages={totalPages}
@@ -149,7 +144,7 @@ const AdminBooksPage = () => {
         onPageChange={setPageNum}
         onPageSizeChange={(newSize) => {
           setPageSize(newSize);
-          setPageNum(1); // reset to first page on size change
+          setPageNum(1);
         }}
       />
     </div>

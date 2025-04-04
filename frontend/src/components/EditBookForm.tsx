@@ -3,34 +3,40 @@ import { Book } from '../types/Book';
 import { updateBook } from '../api/BooksAPI';
 
 interface EditBookFormProps {
-  book: Book;               // The book to edit
-  onSuccess: () => void;    // Callback when update succeeds
-  onCancel: () => void;     // Callback when form is cancelled
+  book: Book;
+  onSuccess: () => void; // Callback when book is updated
+  onCancel: () => void; // Callback to cancel edit
 }
 
 const EditBookForm = ({ book, onSuccess, onCancel }: EditBookFormProps) => {
-  // Initialize form state with the passed-in book
+  // Clone the book prop into local state for editing
   const [formData, setFormData] = useState<Book>({ ...book });
 
-  // Handle changes to any input field
+  // Handle input changes and update state
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Submit updated book data to the API
+  // Submit updated book to API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await updateBook(formData.bookID, formData);
-    onSuccess(); // Notify parent that update is complete
+
+    // ✅ Check that bookID exists before updating
+    if (formData.bookID !== undefined) {
+      await updateBook(formData.bookID, formData);
+      onSuccess(); // Notify parent to refresh and close
+    } else {
+      console.error('bookID is missing for update');
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Update a Book</h2>
       <div className="form-grid">
-        {/* Book input fields */}
+        {/* Editable input fields for book details */}
         <label>
           Title:
           <input
@@ -105,7 +111,7 @@ const EditBookForm = ({ book, onSuccess, onCancel }: EditBookFormProps) => {
           />
         </label>
 
-        {/* Form buttons */}
+        {/* Form action buttons */}
         <button type="submit">Update Book</button>
         <button type="button" onClick={onCancel}>
           Cancel

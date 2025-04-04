@@ -1,6 +1,6 @@
 // Type definition for a Book object
 export interface Book {
-  bookID: number; // Unique identifier for the book
+  bookID?: number; // Unique identifier for the book
   title: string; // Title of the book
   author: string; // Name of the author
   publisher: string; // Name of the publisher
